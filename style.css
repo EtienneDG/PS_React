@@ -17,5 +17,23 @@
 }
 
 #stars-container .well, #answer-container .well{
-  height:150px;
+  height:350px;
+}
+
+#number-container .well .number, #answer-container .number{
+  display:inline-block;
+  margin: 0.5em;
+  background-color:#bbb;
+  width:30px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+#number-container .well .selected-true{
+  background-color: #e8e8e8;
+  color: #bbb;
+  cursor: not-allowed;
 }

@@ -24,8 +24,8 @@ var ButtonContainer = React.createClass({
   render : function(){
     return (
       <div id="button-container">
-      <button className="btn btn-primary">
-        =
+      <button className="btn btn-primary" onClick={this.props.checkAnswer}>
+        {this.props.numberOfTryLeft}
       </button>
       </div>
       )
@@ -41,7 +41,7 @@ var AnswerContainer = React.createClass({
     {
       var val = this.props.selectedNumbers[n];
       answer.push(
-        <div className="number" onClick={this.props.unclickNumber.bind(null,val)}>{val}</div>
+        <div className="number" onClick={this.props.unselectNumber.bind(null,val)}>{val}</div>
         )
     }
     
@@ -66,7 +66,7 @@ var NumberContainer = React.createClass({
     {
       className = "number selected-" + (selectedNumbers.indexOf(i) >=0);
       numberDivs.push(
-        <div className={className} onClick={this.props.clickNumber.bind(null,i)}>{i}</div>
+        <div className={className} onClick={this.props.selectNumber.bind(null,i)}>{i}</div>
         )
     }
 
@@ -85,28 +85,41 @@ var Game = React.createClass({
   getInitialState : function(){
     return {
       selectedNumbers:[],
-      numberOfStars : Math.floor(Math.random()*9)+1
+      numberOfStars : Math.floor(Math.random()*9)+1,
+      numberOfTryLeft : 3
     };
   },
-  clickNumber : function(clicked){
+  selectNumber : function(clicked){
     if(this.state.selectedNumbers.indexOf(clicked) < 0 )
     {
       this.setState({selectedNumbers : this.state.selectedNumbers.concat(clicked)});
-    }
+    } 
   },
-  unclickNumber : function(unclicked){
-      var index = this.state.selectedNumbers.indexOf(unclicked);
-      console.log(index);
+  unselectNumber : function(unclicked){
+    var index = this.state.selectedNumbers.indexOf(unclicked);
+    console.log(index);
+    
+    if(index >= 0)
+    {
+      console.log(unclicked);
+      var t = this.state.selectedNumbers.splice(index,1);
+      console.log(t);
+      this.setState({selectedNumbers : this.state.selectedNumbers});
+      console.log(this.state.selectedNumbers);
+    }
       
-      if(index >= 0)
-      {
-        console.log(unclicked);
-        var t = this.state.selectedNumbers.splice(index,1);
-        console.log(t);
-        this.setState({selectedNumbers : this.state.selectedNumbers});
-        console.log(this.state.selectedNumbers);
-      }
-      
+  },
+  checkAnswer : function(){
+    console.log("check answer");
+    var sumAnswer =  this.state.selectedNumbers.reduce(function(pv, cv) { return pv + cv; }, 0);
+    if(this.state.numberOfStars == sumAnswer)
+    {
+      console.log("good");
+    }
+    else{
+      this.setState({numberOfTryLeft :this.state.numberOfTryLeft-1});
+      console.log("tries left:" + this.state.numberOfTryLeft);
+    }
   },
   render : function(){
     return(
@@ -115,13 +128,14 @@ var Game = React.createClass({
       <hr/>
         <div className="clearfix">
           < StarsContainer numberOfStars={this.state.numberOfStars} />
-          < ButtonContainer />
+          < ButtonContainer numberOfTryLeft={this.state.numberOfTryLeft}
+                            checkAnswer={this.state.checkAnswer}/>
           < AnswerContainer selectedNumbers={this.state.selectedNumbers}
-                            unclickNumber={this.unclickNumber}/> 
+                            unselectNumber={this.unselectNumber}/> 
         </div>
         
         <NumberContainer selectedNumbers={this.state.selectedNumbers} 
-                        clickNumber={this.clickNumber}/>
+                        selectNumber={this.selectNumber}/>
         
       </div>
       )

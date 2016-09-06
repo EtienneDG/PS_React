@@ -37,3 +37,9 @@
   color: #bbb;
   cursor: not-allowed;
 }
+
+#number-container .well .used-true{
+  background-color: #aaddaa;
+  color: #99bb99;
+  cursor: not-allowed;
+}
